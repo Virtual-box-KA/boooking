@@ -1,9 +1,112 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>Admin - Add Movie</title>
+    <title>Add Movie | Admin</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #0a0a0a;
+            color: #fff;
+        }
+
+        .navbar {
+            background: #111;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+        }
+
+        .navbar a {
+            color: #ffcc00;
+            text-decoration: none;
+            margin-right: 20px;
+            font-weight: bold;
+        }
+
+        .container {
+            width: 55%;
+            margin: 30px auto;
+            background: #1a1a1a;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 0 15px rgba(255,255,255,0.1);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #ffcc00;
+        }
+
+        h3 {
+            margin-top: 25px;
+            color: #ffcc00;
+            border-left: 4px solid #ffcc00;
+            padding-left: 10px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            margin-top: 5px;
+            border-radius: 8px;
+            border: none;
+            background: #2a2a2a;
+            color: #fff;
+            font-size: 14px;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border: 2px solid #ffcc00;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background: #ffcc00;
+            color: #000;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            margin-top: 25px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #e6b800;
+        }
+
+        .message {
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .error {
+            background: #ff3b3b;
+        }
+
+        .success {
+            background: #4caf50;
+        }
+
+    </style>
 </head>
 <body>
+
 <%
     Integer userId = (Integer) session.getAttribute("userId");
     String userName = (String) session.getAttribute("userName");
@@ -18,72 +121,72 @@
     String message = (String) request.getAttribute("message");
 %>
 
-<p>
-    <a href="index.jsp">Home</a> |
-    <a href="movies">Movies</a> |
-    Logged in as <b><%= userName %></b> (<%= userRole %>) |
-    <a href="auth?action=logout">Logout</a>
-</p>
+<div class="navbar">
+    <div>
+        <a href="index.jsp">Home</a>
+        <a href="movies">Movies</a>
+    </div>
+    <div>
+        Logged in as <b><%= userName %></b>
+        (<%= userRole %>) |
+        <a href="auth?action=logout">Logout</a>
+    </div>
+</div>
 
-<h1>Add Movie & Show</h1>
+<div class="container">
+    <h1>Add Movie & Show</h1>
 
-<% if (error != null) { %>
-    <p style="color:red;"><%= error %></p>
-<% } %>
-<% if (message != null) { %>
-    <p style="color:green;"><%= message %></p>
-<% } %>
+    <% if (error != null) { %>
+        <div class="message error"><%= error %></div>
+    <% } %>
 
-<form method="post" action="admin/add-movie">
-    <h3>Movie Details</h3>
-    <label>Title:
+    <% if (message != null) { %>
+        <div class="message success"><%= message %></div>
+    <% } %>
+
+    <form method="post" action="admin/add-movie">
+
+        <h3>Movie Details</h3>
+
+        <label>Title</label>
         <input type="text" name="title" required/>
-    </label><br/><br/>
 
-    <label>Genre:
+        <label>Genre</label>
         <input type="text" name="genre"/>
-    </label><br/><br/>
 
-    <label>Language:
+        <label>Language</label>
         <input type="text" name="language"/>
-    </label><br/><br/>
 
-    <label>Duration (minutes):
+        <label>Duration (minutes)</label>
         <input type="number" name="duration" min="1" required/>
-    </label><br/><br/>
 
-    <label>Description:<br/>
-        <textarea name="description" rows="4" cols="50"></textarea>
-    </label><br/><br/>
+        <label>Description</label>
+        <textarea name="description" rows="4"></textarea>
 
-    <label>Poster URL:
+        <label>Poster URL</label>
         <input type="text" name="posterUrl"/>
-    </label><br/><br/>
 
-    <h3>Show Details</h3>
+        <h3>Show Details</h3>
 
-    <label>Show Date:
+        <label>Show Date</label>
         <input type="date" name="showDate" required/>
-    </label><br/><br/>
 
-    <label>Show Time:
+        <label>Show Time</label>
         <input type="time" name="showTime" required/>
-    </label><br/><br/>
 
-    <label>Screen:
+        <label>Screen</label>
         <input type="number" name="screen" min="1" required/>
-    </label><br/><br/>
 
-    <label>Ticket Price:
+        <label>Ticket Price</label>
         <input type="text" name="price" required/>
-    </label><br/><br/>
 
-    <label>Total Seats:
+        <label>Total Seats</label>
         <input type="number" name="totalSeats" min="1" required/>
-    </label><br/><br/>
 
-    <button type="submit">Add Movie</button>
-</form>
+        <button type="submit">Add Movie</button>
+    </form>
+
+</div>
 
 </body>
 </html>
