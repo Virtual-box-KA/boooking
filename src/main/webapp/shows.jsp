@@ -78,6 +78,23 @@
             background: #1c7f32;
         }
 
+        /* admin cancel button */
+        .btn-danger {
+            display: inline-block;
+            background: #dc3545;
+            padding: 10px 16px;
+            color: white;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: 0.2s;
+            font-size: 14px;
+            margin-left: 8px;
+        }
+
+        .btn-danger:hover {
+            background: #b52a37;
+        }
+
         .no-shows {
             text-align: center;
             margin-top: 30px;
@@ -93,6 +110,7 @@
     Movie movie = (Movie) request.getAttribute("movie");
     Integer userId = (Integer) session.getAttribute("userId");
     String userName = (String) session.getAttribute("userName");
+    String userRole = (String) session.getAttribute("userRole");   // <-- added
 %>
 
 <div class="nav">
@@ -128,7 +146,17 @@
             <b>Screen:</b> <%= s.getScreen() %>
         </div>
 
+        <!-- View seats button (everyone) -->
         <a href="seats?showId=<%= s.getId() %>" class="btn">View Seats</a>
+
+        <!-- Admin-only Cancel Show button -->
+        <% if ("ADMIN".equalsIgnoreCase(userRole != null ? userRole : "")) { %>
+            <a href="admin/cancel-show?showId=<%= s.getId() %>&movieId=<%= movie != null ? movie.getId() : 0 %>"
+               class="btn-danger"
+               onclick="return confirm('Cancel this entire show? All bookings and seats for this show will be removed.');">
+                Cancel Show
+            </a>
+        <% } %>
     </div>
 
 <%

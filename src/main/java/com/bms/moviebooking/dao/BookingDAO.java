@@ -80,4 +80,60 @@ public class BookingDAO {
         }
         return list;
     }
+
+    public boolean cancelBooking(int bookingId, int userId) throws SQLException {
+        String selectSql = "SELECT show_id, seat_no FROM bookings " +
+                "WHERE id = ? AND user_id = ? AND payment_status = 'SUCCESS'";
+
+        String updateSeatSql = "UPDATE seats SET status = 'AVAILABLE' " +
+                "WHERE show_id = ? AND seat_no = ?";
+
+        String updateBookingSql = "UPDATE bookings SET payment_status = 'CANCELLED' " +
+                "WHERE id = ? AND user_id = ?";
+
+        try (Connection conn = DBConnection.getConnection()) {
+            conn.setAutoCommit(false);
+            try {
+                int showId;
+                String seatNo;
+
+                // 1) Get show + seat for that booking
+                try (PreparedStatement ps = conn.prepareStatement(selectSql)) {
+                    ps.setInt(1, bookingId);
+                    ps.setInt(2, userId);
+                    try (ResultSet rs = ps.executeQuery()) {
+                        if (!rs.next()) {
+                            conn.rollback();
+                            return false; // booking not found or already cancelled
+                        }
+                        showId = rs.getInt("show_id");
+                        seatNo = rs.getString("seat_no");
+                    }
+                }
+
+                // 2) Free the seat
+                try (PreparedStatement ps = conn.prepareStatement(updateSeatSql)) {
+                    ps.setInt(1, showId);
+                    ps.setString(2, seatNo);
+                    ps.executeUpdate();
+                }
+
+                // 3) Mark booking as CANCELLED
+                try (PreparedStatement ps = conn.prepareStatement(updateBookingSql)) {
+                    ps.setInt(1, bookingId);
+                    ps.setInt(2, userId);
+                    ps.executeUpdate();
+                }
+
+                conn.commit();
+                return true;
+            } catch (SQLException e) {
+                conn.rollback();
+                throw e;
+            } finally {
+                conn.setAutoCommit(true);
+            }
+        }
+    }
+
 }

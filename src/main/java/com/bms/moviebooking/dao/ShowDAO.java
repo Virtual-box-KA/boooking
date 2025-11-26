@@ -83,4 +83,16 @@ public class ShowDAO {
         return -1;
     }
 
+    public boolean deleteShow(int showId) throws SQLException {
+        String sql = "DELETE FROM shows WHERE id = ?";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, showId);
+            int rows = ps.executeUpdate();
+            return rows > 0;
+        }
+    }
+
+
 }

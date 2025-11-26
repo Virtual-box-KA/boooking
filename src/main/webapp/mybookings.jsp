@@ -174,6 +174,19 @@
             <td><%= b.getSeatNo() %></td>
             <td><%= b.getBookingTime() %></td>
             <td><%= b.getPaymentStatus() %></td>
+            <td>
+                <%= b.getPaymentStatus() %>
+
+                <% if (!"CANCELLED".equalsIgnoreCase(b.getPaymentStatus())) { %>
+                    <form method="post" action="cancel-booking" style="display:inline;">
+                        <input type="hidden" name="bookingId" value="<%= b.getId() %>"/>
+                        <button type="submit"
+                                onclick="return confirm('Cancel this booking?');">
+                            Cancel
+                        </button>
+                    </form>
+                <% } %>
+            </td>
         </tr>
         <%
             }
